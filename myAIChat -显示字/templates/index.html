@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>花洒问答助手</title>
+    <style>
+        div {
+            text-align: center; /* To center the child elements horizontally */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #chat-box {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+            overflow-y: scroll;
+            max-height: 400px;
+        }
+
+        .user-message, .assistant-message {
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        .user-message {
+            background-color: #f0f0f0;
+            border-radius: 5px 5px 5px 0;
+        }
+
+        .assistant-message {
+            background-color: #d2edff;
+            border-radius: 5px 5px 0 5px;
+        }
+
+        #user-input {
+            width: 60%;
+            margin: 0 auto; /* Add this line to center the input box horizontally */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #user-input:focus {
+            outline: none;
+            box-shadow: 0 0 5px #1e90ff;
+        }
+
+        #send-button {
+            padding: 10px;
+            background-color: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #send-button:hover {
+            background-color: #007bff;
+        }
+
+        #send-button:active {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>火山智能问答助手</h1>
+    <div>
+        <div id="chat-box">
+            <div class="user-message">Hi!</div>
+            <div class="assistant-message">欢迎，来到火山智能问题助手</div>
+        </div>
+        <input type="text" id="user-input" placeholder="请输入你的问题...">
+        <button id="send-button" onclick="sendMessage()">发送</button>
+    </div>
+
+    <script>
+        function appendMessage(role, message) {
+            const chatBox = document.getElementById("chat-box");
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `${role}-message`;
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+        }
+
+        function sendMessage() {
+            const userMessage = document.getElementById("user-input").value;
+            appendMessage("user", userMessage);
+            document.getElementById("user-input").value = "";
+
+            fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `user_message=${userMessage}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const assistantResponse = data.response;
+                appendMessage("assistant", assistantResponse);
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+    <script
+    async
+    defer
+    src="http://localhost:8080/api/application/embed?protocol=http&host=localhost:8080&token=e9a782375b3a819f">
+    </script>
+
+</body>
+
+
+</html>
